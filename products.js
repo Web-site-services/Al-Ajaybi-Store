@@ -4,8 +4,8 @@
 const products = [
   {
     id: "d1",
-    name: "دفتر سلك 60 ورقة",
-    price: 90,
+    name: "دفتر سلك 70 ورقة",
+    price: 100,
     mainCat: "أدوات مكتبية",
     category: "دفاتر",
     stock: 80,
