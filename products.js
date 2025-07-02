@@ -13,7 +13,7 @@ const products = [
   },
   {
     id: "d2",
-    name: "دفتر جامعي 100 ورقة",
+    name: "دفتر جامعي 700 ورقة",
     price: 13,
     mainCat: "أدوات مكتبية",
     category: "دفاتر",
