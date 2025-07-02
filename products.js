@@ -5,10 +5,10 @@ const products = [
   {
     id: "d1",
     name: "دفتر سلك 60 ورقة",
-    price: 40,
+    price: 90,
     mainCat: "أدوات مكتبية",
     category: "دفاتر",
-    stock: 70,
+    stock: 80,
     img: "https://i.imgur.com/Vp5j7dH.png"
   },
   {
