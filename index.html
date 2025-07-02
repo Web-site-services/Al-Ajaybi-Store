@@ -83,7 +83,7 @@
     .client-card .edit-btn {position:absolute;left:10px;top:10px;background:#4a7c59;color:#fff;padding:4px 15px;border-radius:16px;border:none;font-size:15px;cursor:pointer;}
     .client-card .edit-btn:hover {background:#2a4c39;}
     .client-card label{display:inline-block;font-weight:700;width:85px;text-align:right;}
-    .client-card .val{display:inline-block;width:210px;font-weight:400;text-align:right;}
+    .client-card .val{display:inline-block;width=210px;font-weight:400;text-align:right;}
     .client-form {width:100%; display:flex; flex-direction:column; align-items:center; gap:4px;}
     .client-form label {display:block;margin:14px 0 6px 0;font-weight:700;font-size:15px; color:#3e6a4b;text-align:right;width:100%;}
     .client-form input {
@@ -468,20 +468,21 @@
     <button id="gotoInventoryBtn" onclick="showInventoryArea()">رصيد المخزن</button>
     <button id="gotoShopBtn" style="display:none" onclick="hideInventoryArea()">رجوع للمنتجات</button>
   </div>
-  <h2>متجر العجايبي</h2>
-  <p style="margin:0;font-size:18px; font-weight:700; letter-spacing:1px;">إدارة وشراء وتخزين احترافي</p>
-  <!-- روابط سوشيال ميديا أسفل العنوان -->
-  <div style="margin-top:7px;display:flex;justify-content:center;gap:13px;">
-    <a href="https://wa.me/201202153265" target="_blank" style="color:#fff;font-size:22px;text-decoration:none;">واتساب</a>
-    <a href="https://www.facebook.com/" target="_blank" style="color:#fff;font-size:22px;text-decoration:none;">فيسبوك</a>
-    <a href="https://twitter.com/" target="_blank" style="color:#fff;font-size:22px;text-decoration:none;">تويتر</a>
-    <a href="https://www.instagram.com/" target="_blank" style="color:#fff;font-size:22px;text-decoration:none;">انستجرام</a>
-    <a href="https://t.me/" target="_blank" style="color:#fff;font-size:22px;text-decoration:none;">تليجرام</a>
-  </div>
+  <h1>متجر العجايبي</h1>
+  <!-- شريط التنقل الجديد -->
+  <nav id="mainNavBar" style="margin-top:18px;">
+    <ul style="display:flex;justify-content:center;gap:32px;list-style:none;padding:0;margin:0;font-size:18px;font-weight:bold;">
+      <li><a href="#productsSection" style="color:#fff;text-decoration:none;">المنتجات</a></li>
+      <li><a href="#wantedSection" style="color:#fff;text-decoration:none;">الأصناف المطلوبة</a></li>
+      <li><a href="#contactSection" style="color:#fff;text-decoration:none;">الاتصال بنا</a></li>
+    </ul>
+  </nav>
 </header>
 <main class="main">
   <div id="clientSection"></div>
   <div id="notifBar" class="notif-bar"></div>
+  <!-- عناصر وهمية للانتقال -->
+  <div id="productsSection" style="height:1px;"></div>
   <!-- منطقة المنتجات والسلة -->
   <div id="shopArea">
     <div class="flex" id="shopSection" style="display:none">
@@ -500,6 +501,7 @@
       <section class="products" id="productsList"></section>
     </div>
     <section class="cart-section" id="cartSection" style="display:none">
+      <div id="wantedSection" style="height:1px;"></div>
       <h3>الأصناف المطلوبة</h3>
       <table class="cart-table" id="cartTable">
         <thead>
@@ -536,8 +538,12 @@
       </aside>
       <div class="inventory-products-area">
         <div class="inventory-controls">
-          <button onclick="downloadInventoryExcel()">تحميل كـ Excel</button>
-          <input type="file" id="excelUpload" accept=".csv" onchange="uploadExcelFile(event)">
+          <button onclick="openProductModal()">إضافة صنف جديد</button>
+          <button onclick="downloadInventoryExcel()">تصدير Excel</button>
+          <button onclick="document.getElementById('excelFileInput').click()">تحميل من Excel</button>
+          <input type="file" id="excelFileInput" accept=".csv,.xlsx" style="display:none" onchange="uploadExcelFile(event)">
+          <button onclick="downloadInventoryCode()">تنزيل كود برمجي للأصناف</button>
+          <button onclick="copyInventoryCode()">نسخ الكود البرمجي</button>
         </div>
         <div class="inventory-table-wrapper">
           <table class="inventory-table" id="inventoryTable"></table>
@@ -562,7 +568,7 @@
     </div>
   </div>
 </main>
-<footer>
+<footer id="contactSection">
   <div style="text-align:center">📧 info@yourcompany.com | 📞 0500000000</div>
   <div style="text-align:center; margin-top:6px;">
     تابعنا على
@@ -573,17 +579,14 @@
   </div>
   <div style="text-align:center">© 2025 متجر المستلزمات الورقية</div>
 </footer>
+<!-- ربط ملف المنتجات الخارجي -->
+<script src="products.js"></script>
 <script>
-// ---- بيانات المنتجات و تخزين موحد ----
-let productsData = JSON.parse(localStorage.getItem('inventoryData')||'[]').length
-  ? JSON.parse(localStorage.getItem('inventoryData'))
-  : [
-    { id: "d1", name: "دفتر سلك 60 ورقة", price: 7, mainCat: "أدوات مكتبية", category: "دفاتر", stock: 10, img: "https://i.imgur.com/Vp5j7dH.png" },
-    { id: "d2", name: "دفتر جامعي 100 ورقة", price: 13, mainCat: "أدوات مكتبية", category: "دفاتر", stock: 5, img: "https://i.imgur.com/2Ud9P4q.png" },
-    { id: "k1", name: "قلم أزرق جاف", price: 3, mainCat: "أدوات كتابية", category: "أقلام", stock: 50, img: "https://i.imgur.com/zx9c59V.png" }
-  ];
+// توحيد مصدر بيانات المنتجات والمخزون
+// سيتم تحميل المنتجات من ملف products.js
+var productsData = (typeof products !== 'undefined') ? products : [];
 
-// ---- منطقة المنتجات (index.html logic) ----
+// ---- بيانات المنتجات و تخزين موحد ----
 let cart = [];
 let clientData = JSON.parse(localStorage.getItem('clientData')||'{}');
 let lastSearch = "";
@@ -1059,6 +1062,8 @@ function renderInventoryTable() {
     <th>الكود/مجموعة الصنف</th>
     <th>السعر</th>
     <th>الرصيد</th>
+    <th>تعديل</th>
+    <th>حذف</th>
   </tr>`;
   pageProducts.forEach((prod,i) => {
     html += `<tr>
@@ -1068,6 +1073,8 @@ function renderInventoryTable() {
       <td>${prod.category}</td>
       <td>${prod.price}</td>
       <td>${prod.stock}</td>
+      <td><button onclick="openProductModal(${productsData.findIndex(p=>p.id===prod.id)})">تعديل</button></td>
+      <td><button class="del" onclick="deleteProduct(${productsData.findIndex(p=>p.id===prod.id)})">حذف</button></td>
     </tr>`;
   });
   document.getElementById('inventoryTable').innerHTML = html;
@@ -1184,6 +1191,38 @@ function downloadInventoryExcel() {
   let a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = "المخزون.csv"; a.click();
   notif("تم تصدير الملف بنجاح","#388e3c");
 }
+function downloadInventoryCode() {
+  let code = 'const productsData = ' + JSON.stringify(productsData, null, 2) + ';';
+  let blob = new Blob([code], {type: "text/javascript"});
+  let a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = "productsData.js";
+  a.click();
+  notif("تم تنزيل كود الأصناف بنجاح","#388e3c");
+}
+function copyInventoryCode() {
+  let code = 'const productsData = ' + JSON.stringify(productsData, null, 2) + ';';
+  if (navigator.clipboard) {
+    navigator.clipboard.writeText(code).then(function() {
+      notif("تم نسخ كود الأصناف بنجاح للحافظة","#388e3c");
+    }, function() {
+      notif("حدث خطأ أثناء النسخ!","#c0392b");
+    });
+  } else {
+    // fallback
+    let textarea = document.createElement('textarea');
+    textarea.value = code;
+    document.body.appendChild(textarea);
+    textarea.select();
+    try {
+      document.execCommand('copy');
+      notif("تم نسخ كود الأصناف بنجاح للحافظة","#388e3c");
+    } catch (err) {
+      notif("حدث خطأ أثناء النسخ!","#c0392b");
+    }
+    document.body.removeChild(textarea);
+  }
+}
 function uploadExcelFile(e) {
   const file = e.target.files[0];
   if (!file) return;
@@ -1197,11 +1236,12 @@ function uploadExcelFile(e) {
       productsData.push({id:"id"+Date.now()+i,name,mainCat,category:cat,price:+price,stock:+stock,img:img||"https://via.placeholder.com/200x150?text=منتج"});
     }
     saveInventoryData();
+
     buildFilterGroups();
     renderProducts();
     buildInventoryFilterGroups();
     renderInventoryTable();
-    notif("تم تحميل الأصناف من ملف Excel بنجاح", "#388e3c");
+    notif("تم تحميل الأصناف من ملف Excel بنجاح وتمت إضافتها للموقع", "#388e3c");
   };
   reader.readAsText(file,'utf-8');
 }
